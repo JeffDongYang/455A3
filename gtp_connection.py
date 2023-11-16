@@ -103,6 +103,8 @@ class GtpConnection:
             return
         moveType, moves=self.go_engine.policy_moves(self.board, color)
         gtp_moves = []
+        if isinstance(moves, np.int64):
+            moves = [moves]
         for move in moves:
             coords = point_to_coord(move, self.board.size)
             gtp_moves.append(format_point(coords))

@@ -403,6 +403,18 @@ class GoBoard(object):
                 break
         if (not (0<= point<len(self.board))) or len(have)==9:
             return
+        piece=self.get_color(point)
+        if piece==EMPTY:
+            piece='.'
+        elif piece==color:
+            piece='x'
+        elif piece == BORDER:
+            piece='B'
+        else:
+            piece='o'
+        have+=piece
+        self.check_pattern(point+direction_x+direction_y*self.NS,have,direction_x,direction_y,moveSet,patternList,color,flag)
+
     
     def get_pattern_moves(self):
         """

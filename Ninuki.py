@@ -20,13 +20,13 @@ def undo(board,move):
     board.current_player=GoBoardUtil.opponent(board.current_player)
 
 def play_move(board, move, color):
-    board.play_move_gomoku(move, color)
+    board.play_move(move, color)
 
 def game_result(board):
-    game_end, winner = board.check_game_end_gomoku()
+    winner = board.detect_five_in_a_row()
     moves = board.get_empty_points()
     board_full = (len(moves) == 0)
-    if game_end:
+    if winner!=EMPTY:
     # return 1 if winner is board.current_player else -1
         return winner
     if board_full:
@@ -94,7 +94,7 @@ class NinukiSimulationPlayer(object):
         """
         The genmove function called by gtp_connection
         """
-        moves=GoBoardUtil.generate_legal_moves(board)
+        moves=GoBoardUtil.generate_random_move(board)
         toplay=board.current_player
         best_result, best_move=-1.1, None
         best_move=moves[0]
@@ -118,8 +118,6 @@ class NinukiSimulationPlayer(object):
                     best_move=move
                     self.best_move=best_move
                 undo(board, move)
-        assert(best_move is not None)
-        return best_move
 
 
 def run() -> None:
