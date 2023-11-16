@@ -89,9 +89,9 @@ class GtpConnection:
         self.respond()
         
     def display_pattern_moves(self, args):
-        game_end, winner = self.board.check_game_end_gomoku()
+        winner = self.board.detect_five_in_a_row()
         color=self.board.current_player
-        if game_end:
+        if winner!=EMPTY:
             if winner == color:
                 self.respond("")
             else:

@@ -7,9 +7,9 @@ Cmput 455 sample code
 Written by Cmput 455 TA and Martin Mueller
 """
 from gtp_connection import GtpConnection
-from board_base import DEFAULT_SIZE, GO_POINT, GO_COLOR
+from board_base import DEFAULT_SIZE, GO_POINT, GO_COLOR, EMPTY
 from board import GoBoard
-from board_util import GoBoardUtil, EMPTY
+from board_util import GoBoardUtil
 from engine import GoEngine
 import board_base
 import random
@@ -57,7 +57,7 @@ class NinukiSimulationPlayer(object):
         self.playout_policy=playout_policy
 
     def _random_moves(self, board, color_to_play):
-        return GoBoardUtil.generate_legal_moves(board)
+        return GoBoardUtil.generate_legal_moves(board,color_to_play)
     
     def policy_moves(self, board, color_to_play):
         if(self.playout_policy=='random'):
