@@ -46,7 +46,7 @@ class NinukiSimulationPlayer(object):
         self.playout_policy=playout_policy
 
         #NOTE: pattern has preference, later pattern is ignored if an earlier pattern is found
-        self.pattern_list=['Win', 'BlockWin', 'OpenFour', 'BlockOpenFour', 'Random']
+        self.pattern_list=['Win', 'BlockWin', 'OpenFour', 'Capture', 'Random']
 
         self.name="Ninuki.py"
         self.version = 1.0

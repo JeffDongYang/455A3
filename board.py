@@ -424,13 +424,24 @@ class GoBoard(object):
         """
         moveSet=[set(),set(),set(),set()]
         color=self.current_player
-
-        patternList=[{'xxxx.':{0},'xxx.x':{1},'xx.xx':{2},'x.xxx':{3},'.xxxx':{4}}, #win
-                     {'oooo.':{0},'ooo.o':{1},'oo.oo':{2},'o.ooo':{3},'.oooo':{4}}, #block win
-                     {'.xxx..':{1},'..xxx.':{4},'.xx.x.':{2},'.x.xx.':{3}}, #make-four
-                     {'.ooo..':{1,5},'..ooo.':{0,4},'.oo.o.':{0,2,5},'.o.oo.':{0,3,5}, 'B.ooo..':{0}, '..ooo.B':{6},
-                     'x.ooo..':{0}, '..ooo.x':{6} #block-open-four
-                     }]
+        oppo_color=BLACK+WHITE-color
+        caps=self.get_captures(oppo_color)
+        if caps>=8:
+            patternList=[{'xxxx.':{0},'xxx.x':{1},'xx.xx':{2},'x.xxx':{3},'.xxxx':{4}}, #win
+                     {'oooo.':{0},'ooo.o':{1},'oo.oo':{2},'o.ooo':{3},'.oooo':{4},
+                      '.oxx.':{0},'.xxo.':{5},'..xxo':{3},'oxx..':{1},'Boxx.':{0},'.xxoB':{5},
+                      '.xoo.':{0},'.oox.':{5},'..oox':{3},'xoo..':{1},'Bxoo.':{0}}, #block win
+                     {'.xxx..':{1},'..xxx.':{4},'.xx.x.':{2},'.x.xx.':{3}}, #open four
+                     {'.xoo.':{0},'.oox.':{5},'..oox':{3},'.xoo..':{1},'Bxoo.':{0},'.xooB':{4}#capture
+                    }]
+            
+        else:
+            patternList=[{'xxxx.':{0},'xxx.x':{1},'xx.xx':{2},'x.xxx':{3},'.xxxx':{4}}, #win
+                     {'oooo.':{0},'ooo.o':{1},'oo.oo':{2},'o.ooo':{3},'.oooo':{4},
+                      '.xoo.':{0},'.oox.':{5},'..oox':{3},'xoo..':{1},'Bxoo.':{0}}, #block win
+                     {'.xxx..':{1},'..xxx.':{4},'.xx.x.':{2},'.x.xx.':{3}}, #open four
+                     {'.xoo.':{0},'.oox.':{5},'..oox':{3},'xoo..':{1},'Bxoo.':{0},#capture
+                    }]
 
         direction_x=[1,0,1,-1]
         direction_y=[0,1,1,1]

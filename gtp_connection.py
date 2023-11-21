@@ -103,8 +103,6 @@ class GtpConnection:
             return
         moveType, moves=self.go_engine.policy_moves(self.board, color)
         gtp_moves = []
-        if isinstance(moves, np.int64):
-            moves = [moves]
         for move in moves:
             coords = point_to_coord(move, self.board.size)
             gtp_moves.append(format_point(coords))
@@ -403,11 +401,23 @@ class GtpConnection:
         if legal_moves.size == 0:
             self.respond("pass")
             return
-        rng = np.random.default_rng()
-        choice = rng.choice(len(legal_moves))
-        move = legal_moves[choice]
-        move_coord = point_to_coord(move, self.board.size)
-        move_as_string = format_point(move_coord)
+        plc=self.go_engine.playout_policy
+        if plc=='random':
+            rng = np.random.default_rng()
+            choice = rng.choice(len(legal_moves))
+            move = legal_moves[choice]
+            move_coord = point_to_coord(move, self.board.size)
+            move_as_string = format_point(move_coord)
+        elif plc=='rule_based':
+            moveType, moves=self.go_engine.policy_moves(self.board, color)
+            plc_moves = []
+            for move in moves:
+                coords = point_to_coord(move, self.board.size)
+                plc_moves.append(format_point(coords))
+                sorted_plc_moves=sorted(plc_moves)
+                move_as_string = sorted_plc_moves[0]
+
+        
         self.play_cmd([board_color, move_as_string, 'print_move'])
     
     def timelimit_cmd(self, args: List[str]) -> None:
