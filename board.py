@@ -394,6 +394,34 @@ class GoBoard(object):
                 return prev
         return EMPTY
     
+    def check_oppo_win_move(self,point,have,direction_x,direction_y,oppo_win_set,patternList,color,flag):
+        oppo_caps=self.get_captures(color)
+        if oppo_caps>=8:
+            for i in range(0,4,3):
+                if have in patternList[i]:
+                    for dis in patternList[i][have]:
+                        oppo_win_set[0].add(point-direction_x*(dis+1)-direction_y*self.NS*(dis+1))
+                    break
+        else:
+            for i in range(1):
+                if have in patternList[i]:
+                    for dis in patternList[i][have]:
+                        oppo_win_set[0].add(point-direction_x*(dis+1)-direction_y*self.NS*(dis+1))
+                    break
+        if (not (0<= point<len(self.board))) or len(have)==9:
+            return
+        piece=self.get_color(point)
+        if piece==EMPTY:
+            piece='.'
+        elif piece==color:
+            piece='x'
+        elif piece == BORDER:
+            piece='B'
+        else:
+            piece='o'
+        have+=piece
+        self.check_oppo_win_move(point+direction_x+direction_y*self.NS,have,direction_x,direction_y,oppo_win_set,patternList,color,flag)
+    
     def check_pattern(self,point,have,direction_x,direction_y,moveSet,patternList,color,flag):
         for i in range(0,4):
             if have in patternList[i]:
@@ -423,22 +451,20 @@ class GoBoard(object):
         3. wining in 2 step point
         """
         moveSet=[set(),set(),set(),set()]
+        oppo_win_set=[set()]
         color=self.current_player
         oppo_color=BLACK+WHITE-color
-        caps=self.get_captures(oppo_color)
+        caps=self.get_captures(color)
         if caps>=8:
             patternList=[{'xxxx.':{0},'xxx.x':{1},'xx.xx':{2},'x.xxx':{3},'.xxxx':{4}}, #win
-                     {'oooo.':{0},'ooo.o':{1},'oo.oo':{2},'o.ooo':{3},'.oooo':{4},
-                      '.oxx.':{0},'.xxo.':{5},'..xxo':{3},'oxx..':{1},'Boxx.':{0},'.xxoB':{5},
-                      '.xoo.':{0},'.oox.':{5},'..oox':{3},'xoo..':{1},'Bxoo.':{0}}, #block win
+                         {'.xoo.':{0},'.oox.':{5},'..oox':{3},'xoo..':{1},'Bxoo.':{0}},#capture
+                     {'oooo.':{0},'ooo.o':{1},'oo.oo':{2},'o.ooo':{3},'.oooo':{4},}, #block win
                      {'.xxx..':{1},'..xxx.':{4},'.xx.x.':{2},'.x.xx.':{3}}, #open four
-                     {'.xoo.':{0},'.oox.':{5},'..oox':{3},'.xoo..':{1},'Bxoo.':{0},'.xooB':{4}#capture
-                    }]
+                     ]
             
         else:
             patternList=[{'xxxx.':{0},'xxx.x':{1},'xx.xx':{2},'x.xxx':{3},'.xxxx':{4}}, #win
-                     {'oooo.':{0},'ooo.o':{1},'oo.oo':{2},'o.ooo':{3},'.oooo':{4},
-                      '.xoo.':{0},'.oox.':{5},'..oox':{3},'xoo..':{1},'Bxoo.':{0}}, #block win
+                     {'oooo.':{0},'ooo.o':{1},'oo.oo':{2},'o.ooo':{3},'.oooo':{4}}, #block win
                      {'.xxx..':{1},'..xxx.':{4},'.xx.x.':{2},'.x.xx.':{3}}, #open four
                      {'.xoo.':{0},'.oox.':{5},'..oox':{3},'xoo..':{1},'Bxoo.':{0},#capture
                     }]
@@ -446,16 +472,41 @@ class GoBoard(object):
         direction_x=[1,0,1,-1]
         direction_y=[0,1,1,1]
         flag=[False]
+        #print("123123")
+        for point in range(0, len(self.board)):
+            if flag[0]:
+                break
+            for direction in range(0,4):
+                self.check_oppo_win_move(point,'',direction_x[direction],direction_y[direction],oppo_win_set,patternList,oppo_color,flag)
+
+        moves=self.get_empty_points()
+        for oppo_win_move in list(oppo_win_set[0]):
+            for legalmove in moves:
+                if self.is_legal(legalmove,color):
+                    board_copy = self.copy()
+                    board_copy.play_move(legalmove,color)
+                    board_copy.check_if_move_blocks_win(oppo_win_move, moveSet[1])
 
         for point in range(0, len(self.board)):
             if flag[0]:
                 break
             for direction in range(0,4):
-                    self.check_pattern(point,'',direction_x[direction],direction_y[direction],moveSet,patternList,color,flag)
-        
+                self.check_pattern(point,'',direction_x[direction],direction_y[direction],moveSet,patternList,color,flag)
         i=0
         while i<4 and not bool(moveSet[i]): i+=1
         if i==4:
             return None
         else:
             return i, list(moveSet[i])
+        
+    def check_if_move_blocks_win(self, oppo_win_move, block_win_set):
+        flag[0]=False
+        oppo_win_set[0].clear()
+        for point in range(0, len(board_copy.board)):
+            for direction in range(0,4):
+                board_copy.check_oppo_win_move(point,'',direction_x[direction],direction_y[direction],oppo_win_set,patternList,oppo_color,flag)
+                if oppo_win_move not in oppo_win_set[0]:
+                    moveSet[1].add(legalmove)
+                    self.legalmove=EMPTY
+    
+        

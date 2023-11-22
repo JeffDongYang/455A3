@@ -94,7 +94,7 @@ class NinukiSimulationPlayer(object):
         """
         The genmove function called by gtp_connection
         """
-        moves=GoBoardUtil.generate_random_move(board)
+        moves=GoBoardUtil.generate_random_moves(board)
         toplay=board.current_player
         best_result, best_move=-1.1, None
         best_move=moves[0]
