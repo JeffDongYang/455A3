@@ -424,16 +424,16 @@ class GoBoard(object):
         """
         moveSet=[set(),set(),set(),set()]
         color=self.current_player
-        oppo_color=BLACK+WHITE-color
-        caps=self.get_captures(oppo_color)
+        caps=self.get_captures(color)
         if caps>=8:
             patternList=[{'xxxx.':{0},'xxx.x':{1},'xx.xx':{2},'x.xxx':{3},'.xxxx':{4}}, #win
+                     {'.xoo.':{0},'.oox.':{5},'..oox':{3},'.xoo..':{1},'Bxoo.':{0},'.xooB':{4}#capture
+                      },    
                      {'oooo.':{0},'ooo.o':{1},'oo.oo':{2},'o.ooo':{3},'.oooo':{4},
                       '.oxx.':{0},'.xxo.':{5},'..xxo':{3},'oxx..':{1},'Boxx.':{0},'.xxoB':{5},
                       '.xoo.':{0},'.oox.':{5},'..oox':{3},'xoo..':{1},'Bxoo.':{0}}, #block win
                      {'.xxx..':{1},'..xxx.':{4},'.xx.x.':{2},'.x.xx.':{3}}, #open four
-                     {'.xoo.':{0},'.oox.':{5},'..oox':{3},'.xoo..':{1},'Bxoo.':{0},'.xooB':{4}#capture
-                    }]
+                     ]
             
         else:
             patternList=[{'xxxx.':{0},'xxx.x':{1},'xx.xx':{2},'x.xxx':{3},'.xxxx':{4}}, #win
